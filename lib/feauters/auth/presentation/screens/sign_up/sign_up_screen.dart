@@ -2,6 +2,10 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 
+import '../../../../../internal/helpers/util.dart';
+import '../../widgets/custom_text_field.dart';
+import '../sign_in/sign_in_screen.dart';
+
 class SignUpScreen extends StatefulWidget {
   const SignUpScreen({super.key});
 
@@ -32,8 +36,11 @@ class _SignUpScreenState extends State<SignUpScreen> {
                 ),
                 SizedBox(width: 71.w),
                 InkWell(
+                  onTap: () {
+                    customPushAndRemoveUntil(context, const SignInScreen());
+                  },
                   child: Padding(
-                    padding: const EdgeInsets.only(top: 15),
+                    padding: EdgeInsets.only(top: 15.h),
                     child: Row(
                       children: [
                         Text(
@@ -44,10 +51,10 @@ class _SignUpScreenState extends State<SignUpScreen> {
                             color: const Color(0xffFF5C00),
                           ),
                         ),
-                        const Icon(
+                        Icon(
                           Icons.arrow_forward_ios,
-                          size: 15,
-                          color: Color(0xffFF5C00),
+                          size: 15.r,
+                          color: const Color(0xffFF5C00),
                         )
                       ],
                     ),
@@ -160,46 +167,6 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             )
           ],
-        ),
-      ),
-    );
-  }
-}
-
-class CustomTextFieldCard extends StatelessWidget {
-  const CustomTextFieldCard({
-    super.key,
-  });
-
-  @override
-  Widget build(BuildContext context) {
-    return SizedBox(
-      height: 42.h,
-      width: 1.sw,
-      child: TextField(
-        style: const TextStyle(
-          color: Color(0xff666666),
-          fontFamily: 'Nunito',
-        ),
-        cursorColor: const Color(0xff666666),
-        decoration: InputDecoration(
-          contentPadding: EdgeInsets.only(left: 10.w),
-          filled: true,
-          fillColor: const Color(0xffFFFFFF),
-          enabledBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4.r),
-            borderSide: BorderSide(
-              width: 1.w,
-              color: const Color(0xffEDEDED),
-            ),
-          ),
-          focusedBorder: OutlineInputBorder(
-            borderRadius: BorderRadius.circular(4.r),
-            borderSide: BorderSide(
-              width: 1.w,
-              color: const Color(0xffEDEDED),
-            ),
-          ),
         ),
       ),
     );
