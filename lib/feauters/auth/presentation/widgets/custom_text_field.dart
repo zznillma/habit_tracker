@@ -2,8 +2,11 @@ import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 
 class CustomTextFieldCard extends StatelessWidget {
+  final TextEditingController controller;
+
   const CustomTextFieldCard({
     super.key,
+    required this.controller,
   });
 
   @override
@@ -12,6 +15,7 @@ class CustomTextFieldCard extends StatelessWidget {
       height: 42.h,
       width: 1.sw,
       child: TextField(
+        controller: controller,
         style: const TextStyle(
           color: Color(0xff666666),
           fontFamily: 'Nunito',

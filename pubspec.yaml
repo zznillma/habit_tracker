@@ -47,6 +47,9 @@ dependencies:
   flutter_smart_dialog: ^4.9.0+6
   package_info_plus: ^3.1.2
   flutter_svg: ^2.0.5
+  flushbar: ^1.10.4
+  another_flushbar: ^1.12.29
+  google_sign_in: ^6.1.0
 
 dev_dependencies:
   flutter_test:
