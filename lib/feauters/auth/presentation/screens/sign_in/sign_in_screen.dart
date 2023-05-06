@@ -1,10 +1,13 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
 import 'package:tracker/feauters/auth/presentation/screens/sign_up/sign_up_screen.dart';
 import 'package:tracker/feauters/auth/presentation/widgets/custom_text_field.dart';
+import 'package:tracker/feauters/auth/presentation/widgets/firebase_auth_methods.dart';
 
 import '../../../../../internal/helpers/util.dart';
+import '../reset_password/confirm_email_screen.dart';
 
 class SignInScreen extends StatefulWidget {
   const SignInScreen({super.key});
@@ -14,6 +17,31 @@ class SignInScreen extends StatefulWidget {
 }
 
 class _SignInScreenState extends State<SignInScreen> {
+  final TextEditingController controllerEmail = TextEditingController();
+  final TextEditingController controllerPassword = TextEditingController();
+  late bool isActive;
+
+  @override
+  void initState() {
+    isActive = false;
+    super.initState();
+  }
+
+  @override
+  void dispose() {
+    controllerEmail.dispose();
+    controllerPassword.dispose();
+    super.dispose();
+  }
+
+  void loginUser() {
+    FirebaseAuthMethods(FirebaseAuth.instance).signInWithEmail(
+      email: controllerEmail.text,
+      password: controllerPassword.text,
+      context: context,
+    );
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -43,7 +71,7 @@ class _SignInScreenState extends State<SignInScreen> {
                     child: Row(
                       children: [
                         const Text(
-                          'Sign In',
+                          'Sign Up',
                           style: TextStyle(
                             fontFamily: 'Nunito',
                             color: Color(0xffFF5C00),
@@ -70,7 +98,9 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             SizedBox(height: 10.h),
-            const CustomTextFieldCard(),
+            CustomTextFieldCard(
+              controller: controllerEmail,
+            ),
             SizedBox(height: 22.h),
             Text(
               'Password',
@@ -81,21 +111,27 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             SizedBox(height: 10.h),
-            const CustomTextFieldCard(),
+            CustomTextFieldCard(
+              controller: controllerPassword,
+            ),
             SizedBox(height: 27.h),
             Row(
               children: [
                 InkWell(
-                  onTap: () {},
+                  onTap: () {
+                    isActive = !isActive;
+                    setState(() {});
+                  },
                   child: AnimatedContainer(
-                    duration: const Duration(seconds: 1),
+                    duration: const Duration(milliseconds: 700),
                     height: 24.r,
                     width: 24.r,
                     decoration: BoxDecoration(
-                      borderRadius: BorderRadius.circular(2.r),
+                      borderRadius: BorderRadius.circular(5.r),
                       border: Border.all(
-                        width: 2.r,
-                        color: const Color(0xff666666),
+                        width: isActive ? 12.r : 2.r,
+                        color:
+                            isActive ? Colors.green : const Color(0xff666666),
                       ),
                     ),
                   ),
@@ -111,6 +147,13 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
                 const Spacer(),
                 InkWell(
+                  onTap: () {
+                    Navigator.push(
+                        context,
+                        MaterialPageRoute(
+                          builder: (context) => ConfirmEmailScreen(),
+                        ));
+                  },
                   child: Text(
                     'Forgot Password?',
                     style: TextStyle(
@@ -137,7 +180,9 @@ class _SignInScreenState extends State<SignInScreen> {
                 ),
               ),
               child: ElevatedButton(
-                onPressed: () {},
+                onPressed: () {
+                  loginUser();
+                },
                 style: ElevatedButton.styleFrom(
                   backgroundColor: Colors.transparent,
                   shadowColor: Colors.transparent,
@@ -164,24 +209,29 @@ class _SignInScreenState extends State<SignInScreen> {
               ),
             ),
             SizedBox(height: 18.h),
-            Container(
-              height: 50.h,
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: const Color(0xffFFFFFF),
-                borderRadius: BorderRadius.circular(4.r),
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(1, 1),
-                    blurRadius: 14.r,
-                    color: const Color.fromRGBO(200, 200, 200, 0.15),
-                  )
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(8.r),
-                child: SvgPicture.asset(
-                  'assets/images/google.svg',
+            InkWell(
+              onTap: () {
+                FirebaseAuthMethods(FirebaseAuth.instance).signInWithGoogle();
+              },
+              child: Container(
+                height: 50.h,
+                width: 300.w,
+                decoration: BoxDecoration(
+                  color: const Color(0xffFFFFFF),
+                  borderRadius: BorderRadius.circular(4.r),
+                  boxShadow: [
+                    BoxShadow(
+                      offset: const Offset(1, 1),
+                      blurRadius: 14.r,
+                      color: const Color.fromRGBO(200, 200, 200, 0.15),
+                    )
+                  ],
+                ),
+                child: Padding(
+                  padding: EdgeInsets.all(8.r),
+                  child: SvgPicture.asset(
+                    'assets/images/google.svg',
+                  ),
                 ),
               ),
             ),

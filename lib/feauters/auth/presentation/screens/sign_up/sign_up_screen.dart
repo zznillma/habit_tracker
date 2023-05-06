@@ -1,6 +1,11 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:flutter_svg/svg.dart';
+import 'package:tracker/feauters/auth/presentation/screens/sign_up/email_verefication_screen.dart';
+import 'package:tracker/feauters/auth/presentation/widgets/firebase_auth_methods.dart';
+import 'package:tracker/internal/helpers/components/custom_button_card.dart';
+import 'package:tracker/internal/helpers/components/exceptions.dart';
 
 import '../../../../../internal/helpers/util.dart';
 import '../../widgets/custom_text_field.dart';
@@ -14,6 +19,28 @@ class SignUpScreen extends StatefulWidget {
 }
 
 class _SignUpScreenState extends State<SignUpScreen> {
+  final TextEditingController controllerName = TextEditingController();
+  final TextEditingController controllerEmail = TextEditingController();
+  final TextEditingController controllerPassword = TextEditingController();
+  final TextEditingController controllerConfirm = TextEditingController();
+
+  @override
+  void dispose() {
+    controllerConfirm.dispose();
+    controllerEmail.dispose();
+    controllerName.dispose();
+    controllerPassword.dispose();
+    super.dispose();
+  }
+
+  void signUpuser() async {
+    FirebaseAuthMethods(FirebaseAuth.instance).signUpWithEmail(
+        name: controllerName.text,
+        email: controllerEmail.text,
+        password: controllerPassword.text,
+        context: context);
+  }
+
   @override
   Widget build(BuildContext context) {
     return Scaffold(
@@ -71,7 +98,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             SizedBox(height: 10.h),
-            const CustomTextFieldCard(),
+            CustomTextFieldCard(
+              controller: controllerName,
+            ),
             SizedBox(height: 22.h),
             const Text(
               'Email',
@@ -81,7 +110,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             SizedBox(height: 10.h),
-            const CustomTextFieldCard(),
+            CustomTextFieldCard(
+              controller: controllerEmail,
+            ),
             SizedBox(height: 22.h),
             const Text(
               'Password',
@@ -91,7 +122,9 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             SizedBox(height: 10.h),
-            const CustomTextFieldCard(),
+            CustomTextFieldCard(
+              controller: controllerPassword,
+            ),
             SizedBox(height: 22.h),
             const Text(
               'Password Confirm',
@@ -101,71 +134,31 @@ class _SignUpScreenState extends State<SignUpScreen> {
               ),
             ),
             SizedBox(height: 10.h),
-            const CustomTextFieldCard(),
+            CustomTextFieldCard(
+              controller: controllerConfirm,
+            ),
             SizedBox(height: 48.h),
-            Container(
-              width: 1.sw,
-              height: 50.h,
-              decoration: BoxDecoration(
-                borderRadius: BorderRadius.circular(4.r),
-                gradient: const LinearGradient(
-                  colors: [
-                    Color(0xffFFA450),
-                    Color(0xffFF5C00),
-                  ],
-                ),
-              ),
-              child: ElevatedButton(
-                onPressed: () {},
-                style: ElevatedButton.styleFrom(
-                  backgroundColor: Colors.transparent,
-                  shadowColor: Colors.transparent,
-                  shape: RoundedRectangleBorder(
-                    borderRadius: BorderRadius.circular(4.r),
-                  ),
-                ),
-                child: const Text(
-                  'Sign Up',
-                  style: TextStyle(
-                    fontFamily: 'Nunito',
-                    color: Colors.white,
-                  ),
-                ),
-              ),
+            CustomButtonCard(
+              onPressed: () {
+                if (controllerPassword.text == controllerConfirm.text &&
+                    controllerConfirm.text.isNotEmpty &&
+                    controllerPassword.text.isNotEmpty &&
+                    controllerEmail.text.isNotEmpty &&
+                    controllerName.text.isNotEmpty) {
+                  signUpuser();
+                  Navigator.push(
+                      context,
+                      MaterialPageRoute(
+                        builder: (context) => const EmailVereficationScreen(),
+                      ));
+                } else {
+                  Exceptions.showFlushbar('please fill in all fields',
+                      context: context);
+                }
+              },
+              title: 'Sign Up',
             ),
             SizedBox(height: 59.h),
-            const Align(
-              alignment: Alignment.center,
-              child: Text(
-                'Or sign up with:',
-                style: TextStyle(
-                  fontFamily: 'Nunito',
-                  color: Color(0xff666666),
-                ),
-              ),
-            ),
-            SizedBox(height: 18.h),
-            Container(
-              height: 50.h,
-              width: 300.w,
-              decoration: BoxDecoration(
-                color: const Color(0xffFFFFFF),
-                borderRadius: BorderRadius.circular(4.r),
-                boxShadow: [
-                  BoxShadow(
-                    offset: const Offset(1, 1),
-                    blurRadius: 14.r,
-                    color: const Color.fromRGBO(200, 200, 200, 0.15),
-                  )
-                ],
-              ),
-              child: Padding(
-                padding: EdgeInsets.all(8.r),
-                child: SvgPicture.asset(
-                  'assets/images/google.svg',
-                ),
-              ),
-            )
           ],
         ),
       ),
