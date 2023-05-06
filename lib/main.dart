@@ -6,9 +6,10 @@ import 'package:tracker/feauters/auth/presentation/screens/sign_up/sign_up_scree
 import 'firebase_options.dart';
 
 Future<void> main() async {
-  // await Firebase.initializeApp(
-  //   options: DefaultFirebaseOptions.currentPlatform,
-  // );
+  WidgetsFlutterBinding.ensureInitialized();
+  await Firebase.initializeApp(
+    options: DefaultFirebaseOptions.currentPlatform,
+  );
   runApp(const MyApp());
 }
 
