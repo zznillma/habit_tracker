@@ -210,9 +210,7 @@ class _SignInScreenState extends State<SignInScreen> {
             ),
             SizedBox(height: 18.h),
             InkWell(
-              onTap: () {
-                FirebaseAuthMethods(FirebaseAuth.instance).signInWithGoogle();
-              },
+              onTap: () => GoogleSignInMethod().signInWithGoogle(),
               child: Container(
                 height: 50.h,
                 width: 300.w,
