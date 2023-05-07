@@ -1,6 +1,8 @@
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter_screenutil/flutter_screenutil.dart';
 import 'package:tracker/feauters/auth/presentation/widgets/custom_text_field.dart';
+import 'package:tracker/feauters/auth/presentation/widgets/firebase_auth_methods.dart';
 import 'package:tracker/internal/helpers/components/custom_button_card.dart';
 
 import 'enter_sms_code_screen.dart';
@@ -14,6 +16,13 @@ class ConfirmEmailScreen extends StatefulWidget {
 
 class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
   final TextEditingController controllerEmail = TextEditingController();
+
+  void resetPassword() {
+    FirebaseAuthMethods(FirebaseAuth.instance).resetPassword(
+      email: controllerEmail.text.trim(),
+      context: context,
+    );
+  }
 
   @override
   Widget build(BuildContext context) {
@@ -36,11 +45,7 @@ class _ConfirmEmailScreenState extends State<ConfirmEmailScreen> {
             SizedBox(height: 27.h),
             CustomButtonCard(
               onPressed: () {
-                Navigator.push(
-                    context,
-                    MaterialPageRoute(
-                      builder: (context) => EnterSmsCodeScren(),
-                    ));
+                resetPassword();
               },
               title: 'Submit',
             ),

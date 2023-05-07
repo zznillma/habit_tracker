@@ -1,9 +1,9 @@
 import 'package:firebase_auth/firebase_auth.dart';
-import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
+import 'package:flutter_smart_dialog/flutter_smart_dialog.dart';
 import 'package:google_sign_in/google_sign_in.dart';
+import 'package:tracker/feauters/auth/presentation/screens/sign_in/sign_in_screen.dart';
 
-import '../../../../firebase_options.dart';
 import '../../../../internal/helpers/components/exceptions.dart';
 
 class FirebaseAuthMethods {
@@ -53,26 +53,6 @@ class FirebaseAuthMethods {
     }
   }
 
-  // GOOGLE SIGN IN
-
-  Future<UserCredential> signInWithGoogle() async {
-    final GoogleSignIn googleSignIn = GoogleSignIn();
-
-    await Firebase.initializeApp();
-
-    final GoogleSignInAccount? googleSignInAccount =
-        await googleSignIn.signIn();
-    final GoogleSignInAuthentication googleSignInAuthentication =
-        await googleSignInAccount!.authentication;
-
-    final OAuthCredential credential = GoogleAuthProvider.credential(
-      accessToken: googleSignInAuthentication.accessToken,
-      idToken: googleSignInAuthentication.idToken,
-    );
-
-    return await _auth.signInWithCredential(credential);
-  }
-
   // EMAIL VERIFICATION
   Future<void> sendEmailVerification(BuildContext context) async {
     try {
@@ -84,5 +64,42 @@ class FirebaseAuthMethods {
         context: context,
       );
     }
+  }
+
+  // RESET PASSWORD
+
+  Future<void> resetPassword({
+    required String email,
+    required BuildContext context,
+  }) async {
+    SmartDialog.showLoading();
+    try {
+      await _auth.sendPasswordResetEmail(email: email);
+
+      SmartDialog.dismiss();
+      Exceptions.showFlushbar(
+        'Password Reset sent',
+        context: context,
+      );
+      // Navigator.of(context).push(MaterialPageRoute(
+      //   builder: (context) => SignInScreen(),
+      // ));
+    } on FirebaseAuthException catch (e) {
+      Exceptions.showFlushbar(e.message.toString(), context: context);
+    }
+  }
+}
+
+class GoogleSignInMethod {
+  signInWithGoogle() async {
+    final GoogleSignInAccount? gUser = await GoogleSignIn().signIn();
+
+    final GoogleSignInAuthentication gAuth = await gUser!.authentication;
+
+    final credential = GoogleAuthProvider.credential(
+      accessToken: gAuth.accessToken,
+      idToken: gAuth.idToken,
+    );
+    return await FirebaseAuth.instance.signInWithCredential(credential);
   }
 }
